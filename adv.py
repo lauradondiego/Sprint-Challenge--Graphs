@@ -22,6 +22,21 @@ class Queue():
     def size(self):
         return len(self.queue)
 
+class Stack():
+    def __init__(self):
+        self.stack = []
+
+    def push(self, value):
+        self.stack.append(value)
+
+    def pop(self):
+        if self.size() > 0:
+            return self.stack.pop()
+        else:
+            return None
+
+    def size(self):
+        return len(self.stack)
 
 # Load world
 world = World()
@@ -53,7 +68,29 @@ traversal_path = ['n', 's', 'e', 'w']
 # `player.current_room.get_exits()`
 # `player.travel(direction)`
 
-while player.current_room
+
+def traverse(world, player):
+    visited_rooms = {}
+    q = Queue()
+    print("q:", q)
+    q.enqueue([player.current_room.id])
+    # v - while there is something in the queue
+    while q.size() > 0:
+        path = q.dequeue()
+        print("path:", path)
+        # v - find the last vertex in the path
+        current_room = path[-1]
+        if current_room not in visited_rooms:
+            # v - create a copy w built in python method copy()
+            visited_rooms[current_room] = path.copy()
+            print("currentroom:", current_room)
+    return visited_rooms
+
+    # # v - pick a random direction from traversal_path to move and set to new_curr_room
+    # new_curr_room = random.shuffle(traversal_path)
+    # # v - add that new_curr)room to the visited_rooms
+    # visited_rooms.append(new_curr_room)
+
 
 # TRAVERSAL TEST
 visited_rooms = set()
@@ -92,7 +129,7 @@ while True:
 # current room (current room = I think = player.current_room)
 # 2. go to that room (NEW CURRENT ROOM) and LOG (hint: append) the direction
 # 3. go back and LOOP (hint: while or for loop)
-# 4. ^ This causes player to walk Depth-First Traversal (hint: implement above)
+# 4. ^ This causes player to walk (STACK) Depth-First Traversal (hint: implement above)
 # 5. Reached dead end(node w only 1 path)?
 # Reverse(loop? go back?) to nearest room with unexplored path
 # using Bredth-First Search (see hw) for a room with the
