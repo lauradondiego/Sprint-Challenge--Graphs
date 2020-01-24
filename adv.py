@@ -5,6 +5,242 @@ from world import World
 import random
 from ast import literal_eval
 
+"""
+Simple graph implementation
+"""
+
+class Graph:
+    """Represent a graph as a dictionary of vertices mapping labels to edges."""
+    def __init__(self):
+        self.vertices = {}
+
+    def adventure_traverse(self, starting_room):
+        visited_rooms = set()
+        path = []
+        # add current_room to visited_rooms
+        s = Stack()
+        # print("s:", s)
+        # s.push(player.current_room.id)
+        s.push(starting_room) # from line 18
+        # v - while there is something in the stack
+        while s.size() > 0:
+            current_room = s.pop()
+            print("Current Room:", current_room)
+            if current_room not in visited_rooms:
+                visited_rooms.add(current_room) # set
+                path.append(current_room) # array
+                for vertices in self.get_neighbors(current_room):
+                    if vertices not in visited_rooms: 
+                        s.push(vertices) # add connecting neighbors
+                    print("stack:", s.stack)
+
+# BFS
+
+    def make_connections(self, path) # traversal_path
+            # q = Queue()
+
+
+
+
+        return path
+        
+                       # q = Queue()
+                        # q.enqueue([player])
+                        # visited = set()
+
+                        # while q.size() > 0:
+                        #     path = q.dequeue()
+                        #     last_room = path[-1]
+
+                        #     if last_room not in visited:
+                        #         if last_room == last_room:
+                        #             return path
+                        #         visited.add(last_room)
+                        #         for next_room in player.travel(traversal_path):
+                        #             new_path = list(path)
+                        #             new_path.append(next_room)
+                        #             q.enqueue(new_path)
+                        #             # print("currentroom:", current_room)
+                        #             return visited_rooms
+
+    def add_vertex(self, vertex_id):
+        """
+        Add a vertex to the graph.
+        """
+        self.vertices[vertex_id] = set()
+
+
+    def add_edge(self, v1, v2):
+        """
+        Add a directed edge to the graph.
+        If both exist, and a connection from v1 to v2
+        """
+        if v1 in  self.vertices  and v2 in self.vertices:
+            self.vertices[v1].add(v2)
+        else:
+            raise IndexError("That vertex does not exist!")
+
+
+    def get_neighbors(self, vertex_id):
+        """
+        Get all neighbors (edges) of a vertex.
+        """
+        return self.vertices[vertex_id]
+
+
+    def bft(self, starting_vertex):
+        """
+        Print each vertex in breadth-first order
+        beginning from starting_vertex.
+        """
+        # Create a queue/stack as appropriate
+        queue = Queue()
+        # Put the starting point in that
+        queue.enqueue(starting_vertex)
+        # Make a set to keep track of where we've been
+        visited = set()
+        # While there is stuff in the queue/stack
+        while queue.size() > 0:
+        #    Pop the first item
+            vertex = queue.dequeue()
+        #    If not visited
+            if vertex not in visited:
+        #       DO THE THING!
+                print(vertex)
+                visited.add(vertex)
+        #       For each edge in the item
+                for next_vert in self.get_neighbors(vertex):
+        #           Add that edge to the queue/stack
+                    queue.enqueue(next_vert)
+
+
+    def dft(self, starting_vertex):
+        """
+        Print each vertex in depth-first order
+        beginning from starting_vertex.
+        """
+        # Create a queue/stack as appropriate
+        stack = Stack()
+        # Put the starting point in that
+        stack.push(starting_vertex)
+        # Make a set to keep track of where we've been
+        visited = set()
+        # While there is stuff in the queue/stack
+        while stack.size() > 0:
+        #    Pop the first item
+            vertex = stack.pop()
+        #    If not visited
+            if vertex not in visited:
+        #       DO THE THING!
+                print(vertex)
+                visited.add(vertex)
+        #       For each edge in the item
+                for next_vert in self.get_neighbors(vertex):
+        #           Add that edge to the queue/stack
+                    stack.push(next_vert)
+
+
+    def dft_recursive(self, starting_vertex, visited=None):
+        """
+        Print each vertex in depth-first order
+        beginning from starting_vertex.
+        This should be done using recursion.
+        """
+        if visited is None:
+            visited = set()
+        visited.add(starting_vertex)
+        print(starting_vertex)
+        for child_vert in self.vertices[starting_vertex]:
+            if child_vert not in visited:
+                self.dft_recursive(child_vert, visited)
+
+
+    def bfs(self, starting_vertex, destination_vertex):
+        """
+        Return a list containing the shortest path from
+        starting_vertex to destination_vertex in
+        breath-first order.
+        """
+        # Create a queue/stack as appropriate
+        queue = Queue()
+        # Put the starting point in that
+        # Enstack a list to use as our path
+        queue.enqueue([starting_vertex])
+        # Make a set to keep track of where we've been
+        visited = set()
+        # While there is stuff in the queue/stack
+        while queue.size() > 0:
+        #    Pop the first item
+            path = queue.dequeue()
+            vertex = path[-1]
+        #    If not visited
+            if vertex not in visited:
+                if vertex == destination_vertex:
+                    # Do the thing!
+                    return path
+                visited.add(vertex)
+        #       For each edge in the item
+                for next_vert in self.get_neighbors(vertex):
+                # Copy path to avoid pass by reference bug
+                    new_path = list(path) # Make a copy of path rather than reference
+                    new_path.append(next_vert)
+                    queue.enqueue(new_path)
+
+
+    def dfs(self, starting_vertex, destination_vertex):
+        """
+        Return a list containing a path from
+        starting_vertex to destination_vertex in
+        depth-first order.
+        """
+        # Create a queue/stack as appropriate
+        stack = Stack()
+        # Put the starting point in that
+        # Enstack a list to use as our path
+        stack.push([starting_vertex])
+        # Make a set to keep track of where we've been
+        visited = set()
+        # While there is stuff in the queue/stack
+        while stack.size() > 0:
+        #    Pop the first item
+            path = stack.pop()
+            vertex = path[-1]
+        #    If not visited
+            if vertex not in visited:
+                if vertex == destination_vertex:
+                    # Do the thing!
+                    return path
+                visited.add(vertex)
+        #       For each edge in the item
+                for next_vert in self.get_neighbors(vertex):
+                # Copy path to avoid pass by reference bug
+                    new_path = list(path) # Make a copy of path rather than reference
+                    new_path.append(next_vert)
+                    stack.push(new_path)
+
+
+    def dfs_recursive(self, starting_vertex,  target_value, visited=None, path=None):
+        """
+        Return a list containing a path from
+        starting_vertex to destination_vertex in
+        depth-first order.
+        This should be done using recursion.
+        """
+        if visited is None:
+            visited = set()
+        if path is None:
+            path = []
+        visited.add(starting_vertex)
+        path = path + [starting_vertex]
+        if starting_vertex == target_value:
+            return path
+        for child_vert in self.vertices[starting_vertex]:
+            if child_vert not in visited:
+                new_path = self.dfs_recursive(child_vert, target_value, visited, path)
+                if new_path:
+                    return new_path
+        return None
+## ^ GRAPH CLASS ABOVE
 
 class Queue():
     def __init__(self):
@@ -54,6 +290,7 @@ map_file = "maps/test_loop_fork.txt"
 # Loads the map into a dictionary
 room_graph = literal_eval(open(map_file, "r").read())
 world.load_graph(room_graph)
+print("room graph:", room_graph)
 
 # Print an ASCII map
 world.print_rooms()
@@ -63,73 +300,22 @@ print("player", player)
 
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
-traversal_path = ['n', 's', 'e', 'w']
+# traversal_path = []
 # directions are technically called "exits"
 # `player.current_room.id`
 # `player.current_room.get_exits()`
 # `player.travel(direction)`
-graph = {}  # empty dict
-# last_room = path[-1]
+graph = Graph() # create a graph
+for room in room_graph: #room.graph just gets keys
+    graph.add_vertex(room) # this now has all 17 rooms in it
+for room in room_graph:
+    for edge in room_graph[room][1]:
+        graph.add_edge(room, room_graph[room][1][edge])
 
 
-def traverse(player, s=None):
-    visited_rooms = {}
-    if s is None:  # so you dont reset it
-        s = Stack()
-    # print("s:", s)
-    s.push([player.current_room.id])
-    # v - while there is something in the queue
-    while s.size() > 0:
-        path = s.pop()
-        print("path:", path)
-        # v - find the last vertex in the path
-        current_room = path[-1]
-        if current_room not in visited_rooms:
-            # v - create a copy w built in python method copy()
-            visited_rooms[current_room] = path.copy()
-            last_room = path[-1]
-            for exit in [last_room]:
-                if [last_room][exit] == "?":
-                    return path
-                else:
-                    # COMPLETE ELSE (go back to nearest unvisited path)(handles duplicate paths)
-                    # BFS queue
-
-                    # print("currentroom:", current_room)
-                    return visited_rooms
-
-            traverse(player, s)
-            print("traverse", traverse)
-
-
-def bfs(player):
-    player = Player(world.starting_room)
-
-    q = Queue()
-    q.enqueue([player])
-    visited = set()
-
-    while q.size() > 0:
-        path = q.dequeue()
-        last_room = path[-1]
-
-        if last_room not in visited:
-            if last_room == last_room:
-                return path
-            visited.add(last_room)
-            for next_room in player.travel(traversal_path):
-                new_path = list(path)
-                new_path.append(next_room)
-                q.enqueue(new_path)
-
-    # # v - pick a random direction from traversal_path to move and set to new_curr_room
-    # new_curr_room = random.shuffle(traversal_path)
-    # # v - add that new_curr)room to the visited_rooms
-    # visited_rooms.append(new_curr_room)
-
-
-bfs(player)
-traverse(player)
+traversal_path = graph.adventure_traverse(0)
+print("traversal_path", traversal_path)
+# 0 is starting room 
 # TRAVERSAL TEST
 visited_rooms = set()
 player.current_room = world.starting_room
@@ -150,15 +336,15 @@ else:
 #######
 # UNCOMMENT TO WALK AROUND
 #######
-player.current_room.print_room_description(player)
-while True:
-    cmds = input("-> ").lower().split(" ")
-    if cmds[0] in ["n", "s", "e", "w"]:
-        player.travel(cmds[0], True)
-    elif cmds[0] == "q":
-        break
-    else:
-        print("I did not understand that command.")
+# player.current_room.print_room_description(player)
+# while True:
+#     cmds = input("-> ").lower().split(" ")
+#     if cmds[0] in ["n", "s", "e", "w"]:
+#         player.travel(cmds[0], True)
+#     elif cmds[0] == "q":
+#         break
+#     else:
+#         print("I did not understand that command.")
 
 # NOTE:
 # UPER
