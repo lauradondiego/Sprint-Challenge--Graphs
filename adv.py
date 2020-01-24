@@ -5,10 +5,6 @@ from world import World
 import random
 from ast import literal_eval
 
-"""
-Simple graph implementation
-"""
-
 class Graph:
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
     def __init__(self):
@@ -34,34 +30,30 @@ class Graph:
                         s.push(vertices) # add connecting neighbors
                     print("stack:", s.stack)
 
-# BFS
-
-    def make_connections(self, path) # traversal_path
-            # q = Queue()
-
-
-
+    # def make_connections(self, current_room): # traversal_path
+    #         # might not need starting_room passed it
+    #         # implement BFS
+    #         # find verts(rooms) in traversal_path that do not connect 
+    #         # and run the bfs on them to reverse and check for a new path
+    #     q = Queue()
+    #     q.enqueue(current_room) # add current room to the q
+    #     visited_path = set()
+    #     directions = []
+        # while q.size() > 0:
+        #     path = q.dequeue()
+        #     last_room = path[-1]
+        #     if last_room not in visited_path:
+        #         # if last_room == target_room:
+        #         #     return path
+        #         visited_path.add(last_room)
+        #         for next_vert in current_room[last_room]:
+        #             direction = current_room[last_room][next_vert]
+        #             new_path = list(path)
+        #             new_path.append(next_vert)
+        #             q.enqueue(new_path)
 
         return path
         
-                       # q = Queue()
-                        # q.enqueue([player])
-                        # visited = set()
-
-                        # while q.size() > 0:
-                        #     path = q.dequeue()
-                        #     last_room = path[-1]
-
-                        #     if last_room not in visited:
-                        #         if last_room == last_room:
-                        #             return path
-                        #         visited.add(last_room)
-                        #         for next_room in player.travel(traversal_path):
-                        #             new_path = list(path)
-                        #             new_path.append(next_room)
-                        #             q.enqueue(new_path)
-                        #             # print("currentroom:", current_room)
-                        #             return visited_rooms
 
     def add_vertex(self, vertex_id):
         """
@@ -140,21 +132,6 @@ class Graph:
                     stack.push(next_vert)
 
 
-    def dft_recursive(self, starting_vertex, visited=None):
-        """
-        Print each vertex in depth-first order
-        beginning from starting_vertex.
-        This should be done using recursion.
-        """
-        if visited is None:
-            visited = set()
-        visited.add(starting_vertex)
-        print(starting_vertex)
-        for child_vert in self.vertices[starting_vertex]:
-            if child_vert not in visited:
-                self.dft_recursive(child_vert, visited)
-
-
     def bfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing the shortest path from
@@ -217,29 +194,6 @@ class Graph:
                     new_path = list(path) # Make a copy of path rather than reference
                     new_path.append(next_vert)
                     stack.push(new_path)
-
-
-    def dfs_recursive(self, starting_vertex,  target_value, visited=None, path=None):
-        """
-        Return a list containing a path from
-        starting_vertex to destination_vertex in
-        depth-first order.
-        This should be done using recursion.
-        """
-        if visited is None:
-            visited = set()
-        if path is None:
-            path = []
-        visited.add(starting_vertex)
-        path = path + [starting_vertex]
-        if starting_vertex == target_value:
-            return path
-        for child_vert in self.vertices[starting_vertex]:
-            if child_vert not in visited:
-                new_path = self.dfs_recursive(child_vert, target_value, visited, path)
-                if new_path:
-                    return new_path
-        return None
 ## ^ GRAPH CLASS ABOVE
 
 class Queue():
@@ -314,7 +268,11 @@ for room in room_graph:
 
 
 traversal_path = graph.adventure_traverse(0)
+# call your adventure_traverse() function above
 print("traversal_path", traversal_path)
+
+# connections = graph.make_connections(0)
+# print("Connection function:", make_connections)
 # 0 is starting room 
 # TRAVERSAL TEST
 visited_rooms = set()
