@@ -22,6 +22,7 @@ class Queue():
     def size(self):
         return len(self.queue)
 
+
 class Stack():
     def __init__(self):
         self.stack = []
@@ -38,6 +39,7 @@ class Stack():
     def size(self):
         return len(self.stack)
 
+
 # Load world
 world = World()
 
@@ -45,8 +47,7 @@ world = World()
 # You may uncomment the smaller graphs for development and testing purposes.
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
-# map_file =m
-# "maps/test_loop.txt"
+# map_file = "maps/test_loop.txt"
 map_file = "maps/test_loop_fork.txt"
 # map_file = "maps/main_maze.txt"
 
@@ -67,31 +68,42 @@ traversal_path = ['n', 's', 'e', 'w']
 # `player.current_room.id`
 # `player.current_room.get_exits()`
 # `player.travel(direction)`
+graph = {}  # empty dict
 
 
-def traverse(world, player):
+def traverse(player, q=None):
     visited_rooms = {}
-    q = Queue()
-    print("q:", q)
-    q.enqueue([player.current_room.id])
+    if q == None: # so you dont reset it 
+        s = Stack()
+    # print("s:", s)
+    s.push([player.current_room.id])
     # v - while there is something in the queue
-    while q.size() > 0:
-        path = q.dequeue()
+    while s.size() > 0:
+        path = q.pop()
         print("path:", path)
         # v - find the last vertex in the path
         current_room = path[-1]
         if current_room not in visited_rooms:
             # v - create a copy w built in python method copy()
             visited_rooms[current_room] = path.copy()
-            print("currentroom:", current_room)
-    return visited_rooms
+            for exit in graph[last_room]:
+                if graph[last_room][exit] == "?":
+                    return path
+                else:
+                    # COMPLETE ELSE (go back to nearest unvisited path)(handles duplicate paths)
+                    #BFS queue
+                    # print("currentroom:", current_room)
+                    return visited_rooms
+
+            traverse(player, q)
+            print("traverse", traverse)
 
     # # v - pick a random direction from traversal_path to move and set to new_curr_room
     # new_curr_room = random.shuffle(traversal_path)
     # # v - add that new_curr)room to the visited_rooms
     # visited_rooms.append(new_curr_room)
 
-
+traverse(player)
 # TRAVERSAL TEST
 visited_rooms = set()
 player.current_room = world.starting_room
