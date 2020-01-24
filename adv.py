@@ -69,40 +69,66 @@ traversal_path = ['n', 's', 'e', 'w']
 # `player.current_room.get_exits()`
 # `player.travel(direction)`
 graph = {}  # empty dict
+# last_room = path[-1]
 
 
-def traverse(player, q=None):
+def traverse(player, s=None):
     visited_rooms = {}
-    if q == None: # so you dont reset it 
+    if s is None:  # so you dont reset it
         s = Stack()
     # print("s:", s)
     s.push([player.current_room.id])
     # v - while there is something in the queue
     while s.size() > 0:
-        path = q.pop()
+        path = s.pop()
         print("path:", path)
         # v - find the last vertex in the path
         current_room = path[-1]
         if current_room not in visited_rooms:
             # v - create a copy w built in python method copy()
             visited_rooms[current_room] = path.copy()
-            for exit in graph[last_room]:
-                if graph[last_room][exit] == "?":
+            last_room = path[-1]
+            for exit in [last_room]:
+                if [last_room][exit] == "?":
                     return path
                 else:
                     # COMPLETE ELSE (go back to nearest unvisited path)(handles duplicate paths)
-                    #BFS queue
+                    # BFS queue
+
                     # print("currentroom:", current_room)
                     return visited_rooms
 
-            traverse(player, q)
+            traverse(player, s)
             print("traverse", traverse)
+
+
+def bfs(player):
+    player = Player(world.starting_room)
+
+    q = Queue()
+    q.enqueue([player])
+    visited = set()
+
+    while q.size() > 0:
+        path = q.dequeue()
+        last_room = path[-1]
+
+        if last_room not in visited:
+            if last_room == last_room:
+                return path
+            visited.add(last_room)
+            for next_room in player.travel(traversal_path):
+                new_path = list(path)
+                new_path.append(next_room)
+                q.enqueue(new_path)
 
     # # v - pick a random direction from traversal_path to move and set to new_curr_room
     # new_curr_room = random.shuffle(traversal_path)
     # # v - add that new_curr)room to the visited_rooms
     # visited_rooms.append(new_curr_room)
 
+
+bfs(player)
 traverse(player)
 # TRAVERSAL TEST
 visited_rooms = set()
