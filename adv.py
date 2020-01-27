@@ -30,30 +30,32 @@ class Graph:
                         s.push(vertices) # add connecting neighbors
                     print("stack:", s.stack)
 
-    # def make_connections(self, current_room): # traversal_path
-    #         # might not need starting_room passed it
+        return path
+
+    def make_connections(self, t_path): # t_path is flexible
     #         # implement BFS
     #         # find verts(rooms) in traversal_path that do not connect 
     #         # and run the bfs on them to reverse and check for a new path
-    #     q = Queue()
-    #     q.enqueue(current_room) # add current room to the q
-    #     visited_path = set()
-    #     directions = []
-        # while q.size() > 0:
-        #     path = q.dequeue()
-        #     last_room = path[-1]
-        #     if last_room not in visited_path:
-        #         # if last_room == target_room:
-        #         #     return path
-        #         visited_path.add(last_room)
-        #         for next_vert in current_room[last_room]:
-        #             direction = current_room[last_room][next_vert]
-        #             new_path = list(path)
-        #             new_path.append(next_vert)
-        #             q.enqueue(new_path)
+        # loop thru array to find rooms that aren't connect
+        t_path_modified = t_path.copy()
+        for index, room in enumerate(t_path_modified[:-1]): # stop right before last element
+            # enumerate gives access to index called index 
+            # print(index, room) # prints every room w. index
+            neighbors = self.get_neighbors(t_path_modified[index]) # gets first index
+            # check getneighbors of both of the rooms
+            if t_path_modified[index + 1] not in neighbors: # if the second room is NOT in neighbors
+                bfs_result = self.bfs(t_path_modified[index], t_path_modified[index +1]) # run BFS on room were in and room we need to go to 
+                # results in an array so use array methods 
+                bfs_result.pop() # pop removes last
+                bfs_result.pop(0) # removes first element (0)
+                print("bfs result", bfs_result)
+                t_path_modified[index+1:index+1] = bfs_result # inserts bfs_result list at index+1
+                print("t_path_modified", t_path_modified)
+                return t_path_modified
+                # everytime we modify we stop on line 54
+        return t_path_modified
+# t_path [0, 7, 8, 7, 0, 5, 6, 11, 10, 9, 8, 7, 0, 3, 4, 3, 0, 1, 15, 16, 17, 12, 13, 14, 2]
 
-        return path
-        
 
     def add_vertex(self, vertex_id):
         """
@@ -238,8 +240,8 @@ world = World()
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
-map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+# map_file = "maps/test_loop_fork.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph = literal_eval(open(map_file, "r").read())
@@ -268,8 +270,28 @@ for room in room_graph:
 
 
 traversal_path = graph.adventure_traverse(0)
-# call your adventure_traverse() function above
 print("traversal_path", traversal_path)
+    
+fixed_path = graph.make_connections(traversal_path)
+# print("fiexpath", fixed_path)
+while sum(fixed_path) != sum(traversal_path):
+    traversal_path = fixed_path.copy() #make a copy
+    fixed_path = graph.make_connections(traversal_path)
+    print("traversal_path", traversal_path)
+    print("fixed_path", fixed_path)
+            
+# convert #s to directions
+directions = []
+for index, room in enumerate(traversal_path[:-1]): # stop right before last element
+    for neighbor in room_graph[traversal_path[index]][1]: # targets the obj (keys nswe)
+        if room_graph[traversal_path[index]][1][neighbor] == traversal_path[index +1]:
+            directions.append(neighbor)
+
+print("directions", directions)
+    # traversal_path[index] traversal_path[index +1]
+
+# create the path thats not done yet and then pass in tp 
+# call your adventure_traverse() function above
 
 # connections = graph.make_connections(0)
 # print("Connection function:", make_connections)
@@ -279,7 +301,7 @@ visited_rooms = set()
 player.current_room = world.starting_room
 visited_rooms.add(player.current_room)
 
-for move in traversal_path:
+for move in directions:
     player.travel(move)
     visited_rooms.add(player.current_room)
 
